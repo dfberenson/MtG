@@ -7,7 +7,7 @@
 from sklearn import preprocessing, datasets
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, classification_report
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -136,10 +136,17 @@ cmc_losses = pd.DataFrame(cmc_model.history.history)
 cmc_losses[['loss','val_loss']].plot()
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
+plt.title("CMC Loss")
+plt.savefig("C:/Users/dfber/Google Drive/Classes/CS 230/cmc_losses.png")
 
 cmc_predictions = cmc_model.predict(X_cmc_dev)
 plt.figure()
+plt.title("Mana costs")
+plt.xlabel('True mana cost')
+plt.ylabel('Predicted mana cost')
 plt.scatter(x=y_cmc_dev,y=cmc_predictions)
+plt.savefig("C:/Users/dfber/Google Drive/Classes/CS 230/mana_costs.png")
+
 
 #%% Initialize Color TensorFlow model
 color_model = Sequential()
@@ -168,8 +175,22 @@ color_losses = pd.DataFrame(color_model.history.history)
 color_losses[['loss','val_loss']].plot()
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
+plt.title("Color Loss")
+plt.savefig("C:/Users/dfber/Google Drive/Classes/CS 230/color_losses.png")
 
 color_predictions = color_model.predict(X_color_dev)
+color_predictions_binarized = color_predictions > 0.5
+
+print("White:")
+print(classification_report(y_color_dev[:,0],color_predictions_binarized[:,0]))
+print("Blue:")
+print(classification_report(y_color_dev[:,1],color_predictions_binarized[:,1]))
+print("Black:")
+print(classification_report(y_color_dev[:,2],color_predictions_binarized[:,2]))
+print("Red:")
+print(classification_report(y_color_dev[:,3],color_predictions_binarized[:,3]))
+print("Green:")
+print(classification_report(y_color_dev[:,4],color_predictions_binarized[:,4]))
 
 #%% Assess model on my own idea for a a creature
 
